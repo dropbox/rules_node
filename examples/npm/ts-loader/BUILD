@@ -2,7 +2,7 @@
 
 package(default_visibility = ['//visibility:public'])
 
-load('@org_dropbox_rules_node//node:def.bzl', 'npm_library')
+load('@org_dropbox_rules_node//node:defs.bzl', 'npm_library')
 
 npm_library(
     name = 'ts-loader',

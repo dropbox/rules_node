@@ -20,7 +20,7 @@ LOAD_STATEMENT = """# @generated: Generated with gen_build_npm.py
 
 package(default_visibility = ['//visibility:public'])
 
-load('@org_dropbox_rules_node//node:def.bzl', %s)
+load('@org_dropbox_rules_node//node:defs.bzl', %s)
 """ % (
     ', '.join([repr(t) for t in NPM_RULE_TYPES]))
 
