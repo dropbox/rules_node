@@ -810,7 +810,7 @@ def webpack_binary(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
 
 
 def node_repositories(omit_nodejs=False):
-    if omit_nodejs:
+    if not omit_nodejs:
         native.new_http_archive(
             name = "nodejs",
             url = "https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz",
