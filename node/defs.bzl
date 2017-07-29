@@ -535,7 +535,7 @@ node_test = rule(
     attrs = _node_bin_attrs,
 )
 """
-Runs a basic node test. Succeeds if the program has a return code of
+Defines a basic node test. Succeeds if the program has a return code of
 0, otherwise it fails.
 
 Args:
@@ -556,7 +556,7 @@ def mocha_test(name, srcs=[], deps=[], extra_args=[],
                chai_target='@org_dropbox_rules_node//npm/chai',
                **kwargs):
     """
-    Run node tests using mocha. Takes the same args as
+    Defines a node test that uses mocha. Takes the same args as
     `node_binary`, except that you can't pass a `main` arg,
     because mocha is run as the main js file.
 
@@ -852,15 +852,8 @@ def webpack_binary(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
     )
 
 
-def node_repositories(omit_nodejs=False):
-    if not omit_nodejs:
-        native.new_http_archive(
-            name = "nodejs",
-            url = "https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz",
-            type = "tar.xz",
-            strip_prefix = "node-v6.11.1-linux-x64",
-            sha256 = "e68cc956f0ca5c54e7f3016d639baf987f6f9de688bb7b31339ab7561af88f41",
-            build_file_content = r"""
+
+NODEJS_BUILD_FILE_CONTENT = r"""
 package(default_visibility = [ "//visibility:public" ])
 
 filegroup(
@@ -876,5 +869,15 @@ filegroup(
         "lib/node_modules/npm/**/*",
     ]),
 )
-    """
+"""
+
+def node_repositories(omit_nodejs=False):
+    if not omit_nodejs:
+        native.new_http_archive(
+            name = "nodejs",
+            url = "https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz",
+            type = "tar.xz",
+            strip_prefix = "node-v6.11.1-linux-x64",
+            sha256 = "e68cc956f0ca5c54e7f3016d639baf987f6f9de688bb7b31339ab7561af88f41",
+            build_file_content = NODEJS_BUILD_FILE_CONTENT,
         )
