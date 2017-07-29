@@ -20,8 +20,8 @@ will be stable or maintained.
 
 My hope is that someone motivated will come along and take the best
 ideas from this set of rules, [redfin/npm-bazel][npm-bazel], and
-[pubref/rules_node][pubref_node] and create a set of node rules under
-[github.com/bazelbuild][bazelbuild].
+[pubref/rules_node][pubref_node] and create a set of "officially
+sanctioned" node rules under [github.com/bazelbuild][bazelbuild].
 
 A brief overview:
 
@@ -32,7 +32,9 @@ A brief overview:
    have a fair amount of tooling within Dropbox to support this rule,
    with a public mirror and way to generate `npm_library` rules.
    Simpler versions of those tools are included in
-   [node/tools/npm][npm-tooling].
+   [node/tools/npm][npm-tooling]. If you're using this rule for
+   serious development, you should replace the `npm_installer` with
+   something that pulls from an internal mirror.
 
  - [webpack_binary] uses webpack to build js/css files. Making the
    experience of using webpack better within Dropbox was one of the
@@ -76,7 +78,7 @@ node_binary(
 
 ### Examples
 
-For some examples, see [examples].
+See [examples].
 
 
 ## Setup
