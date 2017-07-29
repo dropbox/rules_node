@@ -108,6 +108,7 @@ One side-effect of that is that node libraries have access to all the
 transitive dependencies for the node binary that depends on them.
 
 Examples:
+
     ```bzl
     node_binary(
         name = 'mybin',
