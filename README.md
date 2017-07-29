@@ -171,7 +171,7 @@ node_binary(
 
 ## `node_library`
 
-Groups node.js sources and deps together. Similar to [py_library] and [java_library] rules.
+Groups node.js sources and deps together. Similar to [py_library] rules.
 
 **NOTE:** This does not create an internal module that you can then `require`. For that, you need to use [node_internal_module].
 
@@ -184,6 +184,71 @@ Groups node.js sources and deps together. Similar to [py_library] and [java_libr
 
  - **data:** (List of [labels]; optional) The list of files needed by this library at runtime.
 
+## `npm_library`
+
+Defines an external npm module.
+
+This rule should usually be generated using `//node/tools/npm:gen_build_npm`, like this:
+
+```bash
+bazel run @org_dropbox_rules_node//node/tools/npm:gen_build_npm -- my-module@1.2.3 ~/src/myrepo/npm/my-module
+```
+
+The module and its dependencies are downloaded using `npm_installer`.
+
+All of the module's dependencies are declared in the shrinkwrap but
+aren't known by Bazel. This is to work around Bazel's restrictions on
+circular dependencies, which are commonplace in the node ecosystem. By
+doing things this way, Bazel will know about your direct `npm`
+dependencies, but not your indirect dependencies.
+
+One restriction that this rule places on it's output is that all
+the files output must either be in the module's directory or in
+'.bin'. E.g. if the module is named `module-name`, then this list
+of contents is legal:
+
+    contents = [
+        'module-name/src/something.js',
+        '.bin/some-binary',
+    ]
+
+But this list of contents is not:
+
+    contents = [
+        'module-name/src/something.js',
+        'another-modules/something-else.js',
+    ]
+
+This allows us to be reasonably sure that any two modules can be
+used together (except when '.bin' has conflicts, which should be
+rare).
+
+### Arguments
+ - **npm_req:** (String; required) The npm string used to download this module. Must be in the form `module-name@1.2.3`.
+    Used to auto-generate this rule.
+
+ - **no_import_main_test:** (Boolean; defaults to `False`) Don't test that the npm library can be required as if it has a main file.
+
+    We test that all imports can be imported like: `require('module')`. For some imports that don't
+    have a `main` js file to execute, this import will fail. For example, `@types/` npm modules will
+    fail. Set this to True to disable that check.
+
+    NOTE: This rule will still generate a test to make sure that module version is correct.
+
+ - **shrinkwrap:** (String; required) The shrinkwrap file that lists out all the node modules to install. Should usually be `npm-shrinkwrap.json`.
+
+ - **contents:** (List of strings; required) All of the files needed by the module.
+
+    contents is a string list instead of a label list to get around Bazel's restrictions on
+    label names, which are violated by npm packages pretty often. Some restrictions still exist,
+    like the restriction that file names cannot contain whitespace.
+
+ - **npm_installer:** ([Label]; defaults to `@org_dropbox_rules_node//node/tools/npm:install) The binary to use to install the npm modules.
+
+    The default npm_installer downloads them from the public npm registry, but ideally you
+    should replace it with a binary that downloads from your private mirror.
+
+ - **npm_installer_args:** (List of strings; optional) Extra arguments to pass to `npm_installer`.
 
 
 [Name]: http://bazel.io/docs/build-ref.html#name
@@ -199,3 +264,4 @@ Groups node.js sources and deps together. Similar to [py_library] and [java_libr
 [node_test]: #node_test
 [mocha_test]: #mocha_test
 [node_repositories]: #node_repositories
+[py_library]: https://docs.bazel.build/versions/master/be/python.html#py_library
