@@ -169,6 +169,21 @@ node_binary(
  - **expose_gc:** (Boolean; optional) Expose `global.gc()` in the node process to allow manual requests for
     garbage collection.
 
+## `node_library`
+
+Groups node.js sources and deps together. Similar to [py_library] and [java_library] rules.
+
+**NOTE:** This does not create an internal module that you can then `require`. For that, you need to use [node_internal_module].
+
+### Arguments
+
+ - **srcs:** (List of [labels]; optional) The list of source files that are processed to create the target.
+
+ - **deps:** (List of [labels]; optional) The list of other libraries or node modules needed to be linked into
+    the target library.
+
+ - **data:** (List of [labels]; optional) The list of files needed by this library at runtime.
+
 
 
 [Name]: http://bazel.io/docs/build-ref.html#name
