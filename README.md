@@ -1,4 +1,4 @@
-# Node Rules for Bazel
+# Node Rules for Bazel (alpha)
 
 Rules | Description
 --- | ---
@@ -10,6 +10,74 @@ Rules | Description
 [node_build] | Build JS/CSS/etc with a node binary.
 [mocha_test] | Defines a node test that uses mocha.
 [node_test] | Defines a basic node test.
+
+## Overview
+
+These rules are a public copy of what we're using at [Dropbox]. We
+open sourced them because we think the community will benefit from
+seeing how we've done things, but we can't promise that these rules
+will be stable or maintained.
+
+My hope is that someone motivated will come along and take the best
+ideas from this set of rules, [redfin/npm-bazel][npm-bazel], and
+[pubref/rules_node][pubref_node] and create a set of node rules under
+[github.com/bazelbuild][bazelbuild].
+
+A brief overview:
+
+ - [node_binary], [node_library], [mocha_test], [node_test] all work
+   the way you would expect them to.
+
+ - [npm_library] downloads npm modules from the public npm mirror. We
+   have a fair amount of tooling within Dropbox to support this rule,
+   with a public mirror and way to generate `npm_library` rules.
+   Simpler versions of those tools are included in
+   [node/tools/npm][npm-tooling].
+
+ - [webpack_binary] uses webpack to build js/css files. Making the
+   experience of using webpack better within Dropbox was one of the
+   reasons we wrote these rules. 
+
+ - [node_internal_module] is used to create an "internal" node module
+   so that you can easily share code without having to upload it to
+   npm.
+
+
+### Design decisions
+
+ - As much as possible, we try to create a "normal" node environment
+   in the runfiles for node binaries. This simplifies debugging (it's
+   easier to create test cases without Bazel) and reduces the learning
+   curve for node developers.
+
+ - We use the `--preserve-symlinks` so that node doesn't get the
+   realpath of the file and look up the node_modules outside of its
+   runfiles.
+
+ - The `node_modules` folder is created in the runfiles and is placed
+   in the package directory that contains the `node_binary` target.
+   This simplifies things because you can have the `main` for a binary
+   be inside its `node_modules`. For example:
+
+```bzl
+node_binary(
+    name = 'webpack_bin',
+    main = 'node_modules/webpack/bin/webpack.js',
+    deps = ['//npm/webpack'],
+)
+```
+
+ - The `contents` attr for `npm_library` is a list of strings that are
+   turned into files instead of a list of labels because files have
+   fewer character restrictions.
+
+ - Compiled node modules are not currently supported.
+
+
+### Examples
+
+For some examples, see [examples].
+
 
 ## Setup
 
@@ -458,11 +526,7 @@ Defines a basic node test. Succeeds if the program has a return code of
 
 Has the same arguments as [node_binary].
 
-
-
-
-
-
+[Dropbox]: https://www.dropbox.com
 [Name]: http://bazel.io/docs/build-ref.html#name
 [labels]: http://bazel.io/docs/build-ref.html#labels
 [Label]: http://bazel.io/docs/build-ref.html#labels
@@ -476,3 +540,8 @@ Has the same arguments as [node_binary].
 [node_test]: #node_test
 [mocha_test]: #mocha_test
 [py_library]: https://docs.bazel.build/versions/master/be/python.html#py_library
+[npm-bazel]: https://github.com/redfin/npm-bazel
+[pubref_node]: https://github.com/pubref/rules_node
+[bazelbuild]: https://github.com/bazelbuild
+[npm-tooling]: https://github.com/dropbox/rules_node/tree/master/node/tools/npm
+[examples]: https://github.com/dropbox/rules_node/tree/master/examples
