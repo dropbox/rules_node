@@ -15,8 +15,6 @@ from node.tools.npm.utils import (
 )
 
 def npm_install(shrinkwrap_path, output):
-    # Copy the shrinkwrap file to the output dir so we can run `npm
-    # install` in that directory.
     shutil.copyfile(shrinkwrap_path, os.path.join(output, SHRINKWRAP))
 
     tmpdir = mkdtemp(suffix='npm_install')

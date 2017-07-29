@@ -30,9 +30,20 @@ export RUNFILES=$STUBPATH/{workspace_name}
 '''
 
 def _get_runfiles_tmpl(ctx, content):
+    # If we're building an external binary, then we need to use the
+    # workspace name of that binary, not the current workspace.
+    if ctx.label.workspace_root:
+        if not ctx.label.workspace_root.startswith('external/'):
+            fail('Workspace root must start with external/: {}'.format(
+                ctx.label.workspace_root,
+            ))
+        workspace_name = ctx.label.workspace_root[len('external/'):]
+    else:
+        workspace_name = ctx.workspace_name
+
     return runfiles_tmpl.format(
-      content=content,
-      workspace_name=ctx.workspace_name,
+        content=content,
+        workspace_name=workspace_name,
     )
 
 
@@ -40,7 +51,32 @@ def _get_package_dir(ctx):
     return ctx.label.package
 
 def _get_output_dir(ctx):
+    # If it's an external label, output to workspace_root.
+    if ctx.label.workspace_root:
+        return ctx.configuration.bin_dir.path + '/' + ctx.label.workspace_root + '/' + _get_package_dir(ctx)
+
     return ctx.configuration.bin_dir.path + '/' + _get_package_dir(ctx)
+
+def _get_relpath(ctx, src):
+    package_prefix = _get_package_dir(ctx) + '/'
+
+    relpath = src.short_path
+    # If relpath starts with '../', that means it belongs to an
+    # external dependency, and it'll look like:
+    #   '../{workspace_name}/{package_path}/{file}
+    # We want to transform it so it includes the package path
+    # and the file.
+    if relpath.startswith('../'):
+        parts = relpath.split('/')
+        relpath = '/'.join(parts[2:])
+
+    if not relpath.startswith(package_prefix):
+        fail('Path must be in the package: (path: {relpath}, package prefix: {package_prefix})'.format(
+                relpath=relpath,
+                package_prefix=package_prefix,
+            ))
+
+    return relpath[len(package_prefix):]
 
 def _new_node_modules_srcs_dict():
     '''Returns a new `node_modules_srcs_dict` dict. It's just a normal
@@ -284,6 +320,13 @@ def _construct_runfiles(ctx, srcs, all_node_modules):
     Fails if any files in all_node_modules conflict with each other.
     '''
     package_dir = _get_package_dir(ctx)
+    if ctx.label.workspace_root:
+        if not ctx.label.workspace_root.startswith('external/'):
+            fail('Workspace root must start with external/: {}'.format(
+                ctx.label.workspace_root,
+            ))
+        package_dir = ctx.label.workspace_root[len('external/'):] + '/' + package_dir
+
     symlinks = {}
     for node_modules_srcs_dict in all_node_modules.values():
         for content_path, src in node_modules_srcs_dict.items():
@@ -299,11 +342,21 @@ def _construct_runfiles(ctx, srcs, all_node_modules):
 
             symlinks[path] = src
 
-    return ctx.runfiles(
-        files = list(srcs),
-        symlinks = symlinks,
-        collect_default=True,
-    )
+    # If the binary is in an external workspace, then we should create
+    # symlinks relative to the runfiles root.
+    if ctx.label.workspace_root:
+        return ctx.runfiles(
+            files = list(srcs),
+            root_symlinks = symlinks,
+            collect_default=True,
+        )
+    else:
+        return ctx.runfiles(
+            files = list(srcs),
+            symlinks = symlinks,
+            collect_default=True,
+        )
+
 
 def _node_binary_impl(ctx):
     srcs, all_node_modules = _collect_srcs_and_deps(ctx)
@@ -555,8 +608,6 @@ def _node_internal_module_impl(ctx):
     else:
         require_name = ctx.label.name
 
-    package_prefix = ctx.label.package + '/'
-
     if ctx.attr.package_json:
         srcs += [ctx.file.package_json]
     elif ctx.attr.main:
@@ -564,12 +615,8 @@ def _node_internal_module_impl(ctx):
         # file.
         package_json_src = ctx.new_file('package.json')
         main = ctx.file.main
-        if not main.short_path.startswith(package_prefix):
-            fail('Main must be in the package: (main: {main}, package prefix: {package_prefix}'.format(
-                main=main.short_path,
-                package_prefix=package_prefix,
-            ))
-        main_relpath = main.short_path[len(package_prefix):]
+
+        main_relpath = _get_relpath(ctx, main)
         ctx.file_action(
             package_json_src,
             '''{{"main": "{main_relpath}"}}'''.format(main_relpath=main_relpath),
@@ -578,13 +625,9 @@ def _node_internal_module_impl(ctx):
 
     node_modules_srcs_dict = _new_node_modules_srcs_dict()
     for src in srcs:
-        relpath = src.short_path
-        if not relpath.startswith(package_prefix):
-            fail('Path must be in the package: (path: {relpath}, package prefix: {package_prefix})'.format(
-                relpath=relpath,
-                package_prefix=package_prefix,
-            ))
-        require_path = require_name + '/' + relpath[len(package_prefix):]
+        relpath = _get_relpath(ctx, src)
+
+        require_path = require_name + '/' + relpath
         if require_path in node_modules_srcs_dict:
             fail('Duplicate path in node_modules: {require_path}'.format(
                 require_path=require_path,
