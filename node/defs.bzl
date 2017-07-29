@@ -749,6 +749,12 @@ node_build = rule(
 )
 """Build JS/CSS/etc with a node binary.
 
+This is a low-level rule, and is only recommended for completely
+custom node builds. If you're using webpack, you should use the
+webpack_build rule. If you're using another standard JS build system
+(rollup, gulp, grunt, ...), you should write a macro that follows the
+conventions of webpack_build.
+
 This rule does not have a `srcs` attribute because it expects all the
 srcs needed for the build to be included in the `builder` binary.
 
@@ -774,6 +780,25 @@ def webpack_binary(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
                    extra_args=[], webpack_target='@org_dropbox_rules_node//npm/webpack'):
     """
     Build JS/CSS/etc with webpack.
+
+    It's recommend that you use the internal node module `dbxBazelUtils`
+    (`@org_dropbox_rules_node//node/dbxBazelUtils`). If you use it like
+    this:
+
+    ```javascript
+    var dbxBazelUtils = require('dbxBazelUtils');
+    var env = dbxBazelUtils.initBazelEnv(__dirname);
+    ```
+
+    Then it will set the working directory to the directory that contains
+    webpack.config.js, which is usually what you want, and you should
+    output to the directory in `env.outputRoot`.
+
+    If the webpack build is run outside of Bazel, then `env.outputRoot`
+    will be `__dirname`.
+
+    Defaults to using webpack@3.4.1. You can specify your own webpack
+    target with `webpack_target`.
 
     Examples:
       ```python
