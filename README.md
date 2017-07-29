@@ -121,7 +121,8 @@ node_binary(
         '//npm/minimist',
         '//npm/mkdirp',
     ],
-)```
+)
+```
 
 ```bzl
 node_library(
