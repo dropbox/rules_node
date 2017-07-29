@@ -109,37 +109,37 @@ transitive dependencies for the node binary that depends on them.
 
 Examples:
 
-    ```bzl
-    node_binary(
-        name = 'mybin',
-        srcs = [
-            'mybin.js',
-        ],
-        main = 'mybin.js',
-        deps = [
-            '//npm/loose-envify',
-            '//npm/minimist',
-            '//npm/mkdirp',
-        ],
-    )```
+```bzl
+node_binary(
+    name = 'mybin',
+    srcs = [
+        'mybin.js',
+    ],
+    main = 'mybin.js',
+    deps = [
+        '//npm/loose-envify',
+        '//npm/minimist',
+        '//npm/mkdirp',
+    ],
+)```
 
-    ```bzl
-    node_library(
-        name = 'lib',
-        srcs = ['lib.js'],
-        deps = [
-            '//npm/mkdirp',
-        ],
-    )
+```bzl
+node_library(
+    name = 'lib',
+    srcs = ['lib.js'],
+    deps = [
+        '//npm/mkdirp',
+    ],
+)
 
-    node_binary(
-        name = 'bin',
-        srcs = ['bin.js'],
-        deps = [
-            ':lib',
-        ],
-    )
-    ```
+node_binary(
+    name = 'bin',
+    srcs = ['bin.js'],
+    deps = [
+        ':lib',
+    ],
+)
+```
 
 ### Arguments
 
