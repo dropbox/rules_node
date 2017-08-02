@@ -762,7 +762,7 @@ The environmental variable `BAZEL_OUTPUT_DIR` is set for all builds.
 The `builder` binary should output to that directory.
 
 For more specific use cases, you should write a macro that creates
-this rule (see webpack_binary).
+this rule (see webpack_build).
 
 Args:
   outs: The list of files output by this rule.
@@ -776,7 +776,7 @@ Args:
 """
 
 
-def webpack_binary(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
+def webpack_build(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
                    extra_args=[], webpack_target='@org_dropbox_rules_node//npm/webpack'):
     """
     Build JS/CSS/etc with webpack.
@@ -803,9 +803,9 @@ def webpack_binary(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
     Examples:
       ```python
       # webpack_build/BUILD
-      load('@org_dropbox_rules_node//node:defs.bzl', 'webpack_binary')
+      load('@org_dropbox_rules_node//node:defs.bzl', 'webpack_build')
 
-      webpack_binary(
+      webpack_build(
           name = 'webpack_build',
           srcs = glob([
               'src/*.js',

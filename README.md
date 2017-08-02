@@ -6,7 +6,7 @@ Rules | Description
 [node_library] | Groups node.js sources and deps together.
 [npm_library] | Defines an external npm module.
 [node_internal_module] | Create an internal node module that can be required as `require('module_name')`.
-[webpack_binary] | Build JS/CSS/etc with webpack.
+[webpack_build] | Build JS/CSS/etc with webpack.
 [node_build] | Build JS/CSS/etc with a node binary.
 [mocha_test] | Defines a node test that uses mocha.
 [node_test] | Defines a basic node test.
@@ -36,7 +36,7 @@ A brief overview:
    serious development, you should replace the `npm_installer` with
    something that pulls from an internal mirror.
 
- - [webpack_binary] uses webpack to build js/css files. Making the
+ - [webpack_build] uses webpack to build js/css files. Making the
    experience of using webpack better within Dropbox was one of the
    reasons we wrote these rules. 
 
@@ -370,11 +370,11 @@ The module name used to require the module (i.e.
     `index.js` if that doesn't exist. Cannot be specified along with
     `package_json`.
 
-## `webpack_binary`
+## `webpack_build`
 
 ```bzl
-load("@org_dropbox_rules_node//node:defs.bzl", "webpack_binary")
-webpack_binary(name, srcs, deps, data, outs, extra_args, env, config,
+load("@org_dropbox_rules_node//node:defs.bzl", "webpack_build")
+webpack_build(name, srcs, deps, data, outs, extra_args, env, config,
                webpack_target)
 ```
 
@@ -403,9 +403,9 @@ Examples:
 
 ```bzl
 # webpack_build/BUILD
-load('@org_dropbox_rules_node//node:defs.bzl', 'webpack_binary')
+load('@org_dropbox_rules_node//node:defs.bzl', 'webpack_build')
 
-webpack_binary(
+webpack_build(
     name = 'webpack_build',
     srcs = glob([
         'src/*.js',
@@ -538,7 +538,7 @@ Has the same arguments as [node_binary].
 [npm_library]: #npm_library
 [node_internal_module]: #node_internal_module
 [node_build]: #node_build
-[webpack_binary]: #webpack_binary
+[webpack_build]: #webpack_build
 [node_test]: #node_test
 [mocha_test]: #mocha_test
 [py_library]: https://docs.bazel.build/versions/master/be/python.html#py_library

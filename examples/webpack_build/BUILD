@@ -1,8 +1,8 @@
 package(default_visibility = ['//visibility:public'])
 
-load('@org_dropbox_rules_node//node:defs.bzl', 'webpack_binary')
+load('@org_dropbox_rules_node//node:defs.bzl', 'webpack_build')
 
-webpack_binary(
+webpack_build(
     name = 'webpack_build',
     srcs = glob([
         'src/*.ts',
