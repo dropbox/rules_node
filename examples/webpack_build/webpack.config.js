@@ -1,6 +1,6 @@
 var path = require('path');
 
-var dbxBazelUtils = require('dbxBazelUtils');
+var dbxBazelUtils = require('dbx-bazel-utils');
 
 var env = dbxBazelUtils.initBazelEnv(__dirname);
 

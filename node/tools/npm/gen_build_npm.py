@@ -109,10 +109,20 @@ def get_npm_library_contents(target_dir, npm_req):
         with open(module_package_json, 'r') as f:
             module_package_data = json.load(f)
 
-        if 'peerDependencies' in module_package_data:
-            del module_package_data['peerDependencies']
-            with open(module_package_json, 'w') as f:
-                json.dump(module_package_data, f)
+        # Walk the module's directory looking for all the package.json
+        # files, so we also remove the peer dependencies of the package's dependencies.
+        for root, dirs, files in os.walk(os.path.join(tmpdir, 'node_modules', name)):
+            for fname in files:
+                if fname == 'package.json':
+                    package_json_path = os.path.join(root, fname)
+
+                    with open(package_json_path, 'r') as f:
+                        module_package_data = json.load(f)
+
+                    if 'peerDependencies' in module_package_data:
+                        del module_package_data['peerDependencies']
+                        with open(package_json_path, 'w') as f:
+                            json.dump(module_package_data, f)
 
         # Finally, create the npm shrinkwrap file and then move it
         # back to the repo.

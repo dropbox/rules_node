@@ -11,7 +11,7 @@ webpack_build(
     outs = ['bundle.js'],
     config = 'webpack.config.js',
     deps = [
-        '@org_dropbox_rules_node//node/dbxBazelUtils',
+        '@org_dropbox_rules_node//node/dbx-bazel-utils',
         '//examples/npm/ts-loader',
         '//examples/npm/typescript',
     ],

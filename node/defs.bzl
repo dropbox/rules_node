@@ -781,12 +781,12 @@ def webpack_build(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
     """
     Build JS/CSS/etc with webpack.
 
-    It's recommend that you use the internal node module `dbxBazelUtils`
-    (`@org_dropbox_rules_node//node/dbxBazelUtils`). If you use it like
+    It's recommend that you use the internal node module `dbx-bazel-utils`
+    (`@org_dropbox_rules_node//node/dbx-bazel-utils`). If you use it like
     this:
 
     ```javascript
-    var dbxBazelUtils = require('dbxBazelUtils');
+    var dbxBazelUtils = require('dbx-bazel-utils');
     var env = dbxBazelUtils.initBazelEnv(__dirname);
     ```
 
@@ -813,7 +813,7 @@ def webpack_build(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
           outs = ['bundle.js'],
           config = 'webpack.config.js',
           deps = [
-              '@org_dropbox_rules_node//node/dbxBazelUtils',
+              '@org_dropbox_rules_node//node/dbx-bazel-utils',
           ],
       )
       ```
@@ -821,7 +821,7 @@ def webpack_build(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
       ```javascript
       // webpack_build/webpack.config.js
       var path = require('path');
-      var dbxBazelUtils = require('dbxBazelUtils');
+      var dbxBazelUtils = require('dbx-bazel-utils');
       var env = dbxBazelUtils.initBazelEnv(__dirname);
 
       module.exports = {
