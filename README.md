@@ -28,9 +28,9 @@ A brief overview:
  - [node_binary], [node_library], [mocha_test], [node_test] all work
    the way you would expect them to.
 
- - [npm_library] downloads npm modules from the public npm mirror. We
+ - [npm_library] downloads npm modules from the public npm repository. We
    have a fair amount of tooling within Dropbox to support this rule,
-   with a public mirror and way to generate `npm_library` rules.
+   with a private mirror and way to generate `npm_library` rules.
    Simpler versions of those tools are included in
    [node/tools/npm][npm-tooling]. If you're using this rule for
    serious development, you should replace the `npm_installer` with
