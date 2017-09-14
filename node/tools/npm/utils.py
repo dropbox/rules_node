@@ -83,6 +83,11 @@ def run_npm(cmd, env=None, cwd=None):
     if env:
         full_env = dict(full_env.items() + env.items())
 
+    if 'HTTP_PROXY' in os.environ:
+        full_env['HTTP_PROXY'] = os.environ['HTTP_PROXY']
+    if 'HTTPS_PROXY' in os.environ:
+        full_env['HTTPS_PROXY'] = os.environ['HTTPS_PROXY']
+
     try:
         ret = subprocess.check_output(
             full_cmd, env=full_env, cwd=cwd, stderr=subprocess.STDOUT

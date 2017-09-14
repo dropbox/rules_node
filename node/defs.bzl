@@ -143,13 +143,20 @@ def _npm_library_impl(ctx):
     if ctx.attr.npm_installer_extra_args:
         command_args.extend(ctx.attr.npm_installer_extra_args)
 
+    env = {}
+    if 'HTTP_PROXY' in ctx.var:
+        env['HTTP_PROXY'] = ctx.var['HTTP_PROXY']
+    if 'HTTPS_PROXY' in ctx.var:
+        env['HTTPS_PROXY'] = ctx.var['HTTPS_PROXY']
+
     ctx.action(
         inputs = [shrinkwrap],
         outputs = node_modules_srcs_dict.values(),
         executable = ctx.executable.npm_installer,
         arguments = command_args,
         progress_message = 'installing node modules from {}'.format(shrinkwrap.path),
-        mnemonic = 'InstallNPMModules'
+        mnemonic = 'InstallNPMModules',
+        env = env,
     )
 
     all_node_modules = _new_all_node_modules()
