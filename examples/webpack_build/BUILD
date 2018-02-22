@@ -14,5 +14,7 @@ webpack_build(
         '@org_dropbox_rules_node//node/dbx-bazel-utils',
         '//examples/npm/ts-loader',
         '//examples/npm/typescript',
+        '//examples/npm/react',
+        '//examples/internal_module',
     ],
 )
