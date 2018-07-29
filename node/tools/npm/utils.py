@@ -81,7 +81,7 @@ def run_npm(cmd, env=None, cwd=None):
     }
 
     if env:
-        full_env = dict(full_env.items() + env.items())
+        full_env.update(env)
 
     if 'HTTP_PROXY' in os.environ:
         full_env['HTTP_PROXY'] = os.environ['HTTP_PROXY']
