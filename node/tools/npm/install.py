@@ -8,6 +8,7 @@ import argparse
 import os
 import shutil
 from tempfile import mkdtemp
+import json
 
 from node.tools.npm.utils import (
     run_npm,
@@ -16,6 +17,31 @@ from node.tools.npm.utils import (
 
 def npm_install(shrinkwrap_path, output):
     shutil.copyfile(shrinkwrap_path, os.path.join(output, SHRINKWRAP))
+
+    # For npm 5+, npm won't install from a shrinkwrap file if there's
+    # no package.json file. Create a dummy package.json file in the
+    # output directory to work around that.
+
+    # First, read the version and name from the shrinkwrap.
+    with open(os.path.join(output, SHRINKWRAP)) as f:
+        shrinkwrap = json.load(f)
+
+    # Get the dependency name and version
+    encoded_dep_name = shrinkwrap['name']
+    dep_name = encoded_dep_name[len('npm-gen-'):]
+    dep_version = shrinkwrap['version']
+
+    # Write out the package.json file.
+    with open(os.path.join(output, "package.json"), "w") as out:
+        json.dump({
+            'name': encoded_dep_name,
+            'version': dep_version,
+            'dependencies': {
+                dep_name: dep_version,
+            },
+        }, out)
+
+    # Now finish the install.
 
     tmpdir = mkdtemp(suffix='npm_install')
     env = {
