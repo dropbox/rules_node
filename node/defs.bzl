@@ -580,7 +580,7 @@ def mocha_test(name, srcs=[], deps=[], extra_args=[],
     if not srcs:
         fail("'srcs' cannot be empty")
 
-    root = "$RUNFILES/" + PACKAGE_NAME
+    root = "$RUNFILES/" + native.package_name()
 
     mocha_args = [root + "/" + src for src in srcs]
 
@@ -869,7 +869,7 @@ def webpack_build(name, srcs=[], deps=[], data=[], config='', outs=[], env={},
         extra_args = [
             '--config',
             '$RUNFILES/{pkg}/{config}'.format(
-                pkg=PACKAGE_NAME,
+                pkg=native.package_name(),
                 config=config,
             ),
         ] + extra_args,
