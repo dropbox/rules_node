@@ -90,6 +90,8 @@ First you must [install][bazel-install] Bazel.
 For Linux, you must add the following to your `WORKSPACE` file:
 
 ```bzl
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
 git_repository(
     name = "org_dropbox_rules_node",
     remote = "https://github.com/dropbox/rules_node.git",
@@ -112,6 +114,9 @@ NOTE: These rules have only been tested on Linux.
 For macOS, you must add the following to your `WORKSPACE` file:
 
 ```bzl
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
 git_repository(
     name = "org_dropbox_rules_node",
     remote = "https://github.com/dropbox/rules_node.git",

@@ -3,6 +3,8 @@
 Bazel rules for working with node.
 """
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
 
 # Helper functions
 
@@ -905,7 +907,7 @@ filegroup(
 
 def node_repositories(omit_nodejs=False):
     if not omit_nodejs:
-        native.new_http_archive(
+        http_archive(
             name = "nodejs",
             url = "https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x64.tar.xz",
             type = "tar.xz",
