@@ -1,4 +1,4 @@
-# Node Rules for Bazel (alpha)
+# Node Rules for Bazel (unsupported)
 
 Rules | Description
 --- | ---
@@ -15,13 +15,12 @@ Rules | Description
 
 These rules are a public copy of what we're using at [Dropbox]. We
 open sourced them because we think the community will benefit from
-seeing how we've done things, but we can't promise that these rules
-will be stable or maintained.
+seeing how we've done things, but they are not supported. Pull
+requests are welcome, though!
 
-My hope is that someone motivated will come along and take the best
-ideas from this set of rules, [redfin/npm-bazel][npm-bazel], and
-[pubref/rules_node][pubref_node] and create a set of "officially
-sanctioned" node rules under [github.com/bazelbuild][bazelbuild].
+We encourage you use the officially sanctioned
+[nodejs][bazelbuild-rules_nodejs] or
+[typescript][bazelbuild-rules_typescript] rules instead, if possible!
 
 A brief overview:
 
@@ -552,3 +551,5 @@ Has the same arguments as [node_binary].
 [bazelbuild]: https://github.com/bazelbuild
 [npm-tooling]: https://github.com/dropbox/rules_node/tree/master/node/tools/npm
 [examples]: https://github.com/dropbox/rules_node/tree/master/examples
+[bazelbuild-rules_nodejs]: https://github.com/bazelbuild/rules_nodejs
+[bazelbuild-rules_typescript]: https://github.com/bazelbuild/rules_typescript
