@@ -122,7 +122,7 @@ load("@org_dropbox_rules_node//node:defs.bzl", "node_repositories", "NODEJS_BUIL
 
 node_repositories(omit_nodejs=True)
 
-new_http_archive(
+http_archive(
     name = "nodejs",
     url = "https://nodejs.org/dist/v6.11.1/node-v6.11.1-darwin-x64.tar.gz",
     strip_prefix = "node-v6.11.1-darwin-x64",
