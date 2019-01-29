@@ -38,7 +38,7 @@ A brief overview:
 
  - [webpack_build] uses webpack to build js/css files. Making the
    experience of using webpack better within Dropbox was one of the
-   reasons we wrote these rules. 
+   reasons we wrote these rules.
 
  - [node_internal_module] is used to create an "internal" node module
    so that you can easily share code without having to upload it to
@@ -512,7 +512,7 @@ Takes the same arguments as node_binary, except for the following:
 
  - **mocha_target:** The target to use for including 'mocha'.
 
- - **chai_target:** The target ot use for including 'chai'.
+ - **chai_target:** The target to use for including 'chai'.
 
 ## `node_test`
 
