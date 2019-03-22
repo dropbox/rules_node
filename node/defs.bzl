@@ -305,7 +305,7 @@ node_library = rule(
     attrs = {
         'srcs': attr.label_list(allow_files=True),
         'deps': attr.label_list(allow_files=False),
-        'data': attr.label_list(cfg='data', allow_files=True),
+        'data': attr.label_list(allow_files=True),
     }
 )
 """
@@ -434,7 +434,7 @@ $RUNFILES/{node} {node_flags} $RUNFILES/{inner_wrapper} {default_args}
 _node_bin_attrs = {
     'srcs': attr.label_list(allow_files=True),
     'deps': attr.label_list(allow_files=False),
-    'data': attr.label_list(cfg='data', allow_files=True),
+    'data': attr.label_list(allow_files=True),
 
     'main': attr.label(allow_single_file=True, mandatory=True),
     'extra_args': attr.string_list(),
@@ -656,7 +656,7 @@ node_internal_module = rule(
     attrs = {
         'srcs': attr.label_list(allow_files=True),
         'deps': attr.label_list(allow_files=False),
-        'data': attr.label_list(cfg='data', allow_files=True),
+        'data': attr.label_list(allow_files=True),
         'require_name': attr.string(),
         'package_json': attr.label(allow_single_file=True),
         'main': attr.label(allow_single_file=True),
@@ -749,7 +749,7 @@ node_build = rule(
     implementation = _node_build_impl,
     attrs = {
         'outs': attr.output_list(mandatory=True),
-        'data': attr.label_list(cfg='data', allow_files=True),
+        'data': attr.label_list(allow_files=True),
         'builder': attr.label(executable=True, cfg='host', mandatory=True),
         'env': attr.string_dict(),
         'extra_args': attr.string_list(),
