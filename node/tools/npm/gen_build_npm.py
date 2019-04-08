@@ -35,6 +35,18 @@ def encode_npm_name(name):
     '''
     return 'npm-gen-' + name.replace('/', '-').replace('@', 'at_')
 
+def encode_rule_name(pkg, name):
+    '''
+    Encode `name` so that it's a valid bazel rule name. If pkg ends
+    with the same path segments as the name then they will be removed
+    so that pkg:my/module, name:@my/module will return just 'module'
+    '''
+    name = name.replace('@', '')
+    if pkg.replace('\\', '/').endswith(name):
+        name = name.split('/')[-1]
+    return name.replace('/', '_')
+
+
 def get_npm_library_contents(target_dir, npm_req):
     ''' Return a list of the contents of the npm module and its dependencies.  '''
     name = get_dep_name(npm_req)
@@ -204,7 +216,7 @@ def generate_build_file_and_shrinkwrap(npm_req, output):
 
     contents = get_npm_library_contents(output, npm_req)
 
-    name = get_dep_name(npm_req)
+    name = encode_rule_name(output, get_dep_name(npm_req))
 
     npm_rule = BazelRule(
         attr_map = {
